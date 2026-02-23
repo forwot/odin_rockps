@@ -1,3 +1,14 @@
+// RESULTS UI
+let resultsContainer = document.querySelector('.resultsContainer');
+let result = document.createElement('p');
+let runningScore = document.createElement('p');
+let finalScore = document.createElement('p');
+
+// SCORES
+let humanScore = 0;
+let computerScore = 0;
+
+
 // GENERATE CHOICE OF COMPUTER 
 function getComputerChoice(){
     let number = Math.floor(Math.random() * 3);
@@ -11,55 +22,69 @@ function getComputerChoice(){
     }
   }
 
-// GET INPUT FOR HUMAN CHOICE
-  function getHumanChoice(){
-    let input = prompt("Rock, Paper or Scissors?");
-    let choice = input.toLowerCase()
-    return choice
-  }
 
-
-// RUN FIVE ROUNDS IN A GAME
-// show final score, and result
-function playGame(){
-    let humanScore = 0;
-    let computerScore = 0;
-
-    for (let i=0; i<5; i++){
-        const humanSelection = getHumanChoice();
-        const computerSelection = getComputerChoice();
-
-        playRound(humanSelection, computerSelection);
+// PLAY 1 ROUND 
+// write all win, draw, lose conditions
+// log scores when coditions are met
+function playRound(humanChoice, computerChoice){
+    if (humanChoice == "rock" && computerChoice == "scissors"
+        ||humanChoice == "paper" && computerChoice == "rock"
+        ||humanChoice == "scissors" && computerChoice == "paper"){
+            humanScore++;
+            result.textContent = `You Win! ${humanChoice} beats ${computerChoice}`;
+            resultsContainer.appendChild(result);
     }
-
-    console.log(`FINAL humanScore: ${humanScore} FINAL computerScore: ${computerScore}`)
-    if (humanScore > computerScore){
-        console.log("YOU WON!");
-    }
-    else if(humanScore == computerScore){
-        console.log("TIE!")
+    else if (humanChoice == computerChoice){
+        result.textContent = `Tied! Both chose ${computerChoice}`;
+        resultsContainer.appendChild(result);
     }
     else{
-        console.log("YOU LOSE!")
+        computerScore++;
+        result.textContent = `You Lose! ${computerChoice} beats ${humanChoice}`;
+        resultsContainer.appendChild(result);
     }
 
-    // PLAY 1 ROUND 
-    // write all win, draw, lose conditions
-    // log scores when coditions are met
-    function playRound(humanChoice, computerChoice){
-        if (humanChoice == "rock" && computerChoice == "scissors"
-            ||humanChoice == "paper" && computerChoice == "rock"
-            ||humanChoice == "scissors" && computerChoice == "paper"){
-                humanScore++;
-                console.log(`You win! ${humanChoice} beats ${computerChoice}`);
+    if (humanScore == 5 || computerScore == 5){
+        finalScore.textContent = `FINAL ==> humanScore: ${humanScore} computerScore: ${computerScore}`;
+        resultsContainer.appendChild(finalScore);            
+        
+        if (humanScore > computerScore){
+            finalScore.textContent += "\nYOU WON";
         }
-        else if (humanChoice == computerChoice){
-            console.log(`TIE! Both chose ${computerChoice}`);
+        else if(humanScore == computerScore){
+            finalScore.textContent += "\nTIE";
         }
         else{
-            computerScore++;
-            console.log(`You Lose! ${computerChoice} beats ${humanChoice}`);
+            finalScore.textContent += "\nYOU LOST";
         }
     }
+    runningScore.textContent = `humanScore: ${humanScore}, computerScore: ${computerScore}`;
+    resultsContainer.appendChild(runningScore);
+    
 }
-playGame()
+
+// BUTTONS UI
+let buttonsContainer = document.querySelector('.buttonsContainer');
+
+buttonsContainer.addEventListener('click', (event) => {
+    let target = event.target;
+    let humanChoice = '';
+    const computerChoice = getComputerChoice();
+
+    switch (target.id){
+        case 'rock':
+            humanChoice = "rock";
+            break;
+            
+        case 'paper':
+            humanChoice = "paper";
+            break;
+            
+        case 'scissors':
+            humanChoice = "scissors";
+            break;
+    }
+        if( !(humanChoice == '') ){
+            playRound(humanChoice, computerChoice);
+        }
+})
